@@ -162,11 +162,8 @@ function showCategory(categoria) {
             a.appendChild(document.createTextNode(production.value.title));
             a.addEventListener("click", showProduction(production.value));
             h4.appendChild(a);
-            var pro1="hola";
-            var btn = document.createElement("button");
-            btn.appendChild(document.createTextNode("+Info"));
-            btn.setAttribute("onclick","abrirVentana(this.pro1)");
-            desc.appendChild(btn);
+
+           
 
             production = productions.next();
         }
@@ -240,6 +237,11 @@ function showHomePage(){
             a.appendChild(document.createTextNode(production.value.title));
             a.addEventListener("click", showProduction(production.value));
             h4.appendChild(a);
+
+            var btn = document.createElement("button");
+            btn.appendChild(document.createTextNode("+Info"));
+            btn.onclick = abrirVentana(production.value);
+            desc.appendChild(btn);
 
             production = productions.next();
         }//Fin del while de producciones
@@ -510,9 +512,6 @@ function showDirector(director) {
         }
         
     }
-}
-function showVentana(production){
-    abrirVentana(production);
 }
 function showProduction(production) {
     return function () {

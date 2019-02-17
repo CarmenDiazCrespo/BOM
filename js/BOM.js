@@ -8,7 +8,7 @@ function abrirVentana(production){
 	var main = document.getElementById("div-main");
 	
 	var h2 = document.createElement("h2");
-    h2.appendChild(document.createTextNode(production));
+    h2.appendChild(document.createTextNode(production.title));
 	main.appendChild(h2);
 	
 	ventana[cont]=window.open(pagina);
