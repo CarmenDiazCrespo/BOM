@@ -2,15 +2,9 @@
 
 var cont = 0;
 var ventana = [];
-function abrirVentana(production){
+function abrirVentana(){
     cont++;
-	var pagina= "NuevaPestaña.html";
-	var main = document.getElementById("div-main");
-	
-	var h2 = document.createElement("h2");
-    h2.appendChild(document.createTextNode(production.title));
-	main.appendChild(h2);
-	
+	var pagina= "NuevaPestaña.html";	
 	ventana[cont]=window.open(pagina);
 }
 

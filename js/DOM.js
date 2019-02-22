@@ -240,7 +240,7 @@ function showHomePage(){
 
             var btn = document.createElement("button");
             btn.appendChild(document.createTextNode("+Info"));
-            btn.onclick = abrirVentana(production.value);
+            btn.setAttribute("onclick", "abrirVentana();");
             desc.appendChild(btn);
 
             production = productions.next();
