@@ -2,7 +2,7 @@
 
 var vs = VideoSystem.getInstance();
 
-function objetos(){
+function crearObjetos(){
     //Creo los objetos que voy a utilizar.
     //Objetos usuarios
     var u1 = new User("kheiss","montoya@hotmail.com","Montoya123!");
@@ -26,6 +26,9 @@ function objetos(){
     var re1= new Resource("59:20","www.w3school.com");
     var re2= new Resource("229:10","www.gnula.nu");
     var re3= new Resource("05:00","www.gnula.nu");
+    var re4= new Resource("59:20","www.w3school.com");
+    var re5= new Resource("229:10","www.gnula.nu");
+    var re6= new Resource("05:00","www.gnula.nu");
     //Objetos de production
     var pro1= new Movie("Red2","USA","2025-02-25");
     pro1.resource= re1;
@@ -38,10 +41,13 @@ function objetos(){
     pro3.image="imagenes/twin_peaks.jpg";
     var pro4 = new Movie("1408","USA", "2007-06-22");
     pro4.image="imagenes/1408.jpg";
+    pro4.resource= re4;
     var pro5 = new Movie("Que se mueran los feos","España", "2010-06-24");
     pro5.image="imagenes/feos.jpg";
+    pro5.resource= re5;
     var pro6 = new Movie("La tumba de las luciernagas","Japón", "1967-01-10");
     pro6.image="imagenes/tumba.jpg";
+    pro6.resource= re6;
     vs.addProduction(pro1);
     vs.addProduction(pro2);
     vs.addProduction(pro3);
@@ -58,6 +64,7 @@ function objetos(){
     vs.addActor(ac3);
     vs.addActor(ac4);
     //objetos category
+    var cat5= new Category("Lo más visto","Las peliculas y series más vistas...");
     var cat1= new Category("Comedia","Te partirás de risa.");
     var cat2= new Category("Drama", "Contexto serio, con un tono y una orientación más susceptible de inspirar tristeza y compasión. ");
     var cat3= new Category("Anime", "Monitos japoneses.");
@@ -66,6 +73,7 @@ function objetos(){
     vs.addCategory(cat2);
     vs.addCategory(cat3);
     vs.addCategory(cat4);
+    //vs.addCategory(cat5);
     
     //Objetos de Coordenadas
     var c1 = new Coordinate(-1, 1);
@@ -145,9 +153,13 @@ function showCategory(categoria) {
             fotoPro.appendChild(galeria1);
 
             //Cojo la foto de la Producción
+            var a1 = document.createElement("a");
+            galeria1.appendChild(a1);
+
             var imgPro = document.createElement("img");
             imgPro.setAttribute("src", production.value.image);
-            galeria1.appendChild(imgPro);
+            imgPro.addEventListener("click", showProduction(production.value));
+            a1.appendChild(imgPro);
 
             //Meto la descripción de la foto
             var desc = document.createElement("div");
@@ -163,8 +175,6 @@ function showCategory(categoria) {
             a.addEventListener("click", showProduction(production.value));
             h4.appendChild(a);
 
-           
-
             production = productions.next();
         }
     }
@@ -177,14 +187,23 @@ function showHomePage(){
     var main = document.getElementById("div-main");
     removeChildren(main);
 
+    var tituloPag = document.createElement("h2");
+    tituloPag.appendChild(document.createTextNode("Página de Inicio"));
+    tituloPag.setAttribute("id","Ini");
+    main.appendChild(tituloPag);
+
+    var divCon = document.createElement("div");
+    divCon.setAttribute("class","container");
+    main.appendChild(divCon);
+
     //Recorro las categorías para visualizarlas
     var categorias = vs.categorias;
     var categoria = categorias.next();
     while (categoria.done !== true){
         //Creo los contenedores de las categorías que serán tantos como categorías haya
         var colCat = document.createElement("div");
-        colCat.setAttribute("class", "col-sm-8");
-        main.appendChild(colCat);
+        colCat.setAttribute("class", "col-sm-12");
+        divCon.appendChild(colCat);
 
         var cap = document.createElement("div");
         cap.setAttribute("class", "caption");
@@ -203,56 +222,113 @@ function showHomePage(){
         var p = document.createElement("p");
         p.appendChild(document.createTextNode(categoria.value.description));
         cap.appendChild(p);
+        
+        //Creo un div para meterlo en columnas más pequeñas y se quede a un lado
+        var fotoDiv = document.createElement("div");
+        fotoDiv.setAttribute("class", "col-sm-4 divFotoCar");
+        cap.appendChild(fotoDiv);
+
+        //Creo el carrusel
+        var divCar = document.createElement("div");
+        divCar.setAttribute("id", "myCarousel");
+        divCar.setAttribute("class", "carousel slide");
+        divCar.setAttribute("data-ride", "carousel");
+        fotoDiv.appendChild(divCar);
+
+        //Los circulitos que indica en cual está
+        var ol = document.createElement("ol");
+        ol.setAttribute("class", "carousel-indicators");
+        divCar.appendChild(ol);
+         
+        //El div para las fotos
+        var divInner = document.createElement("div");
+        divInner.setAttribute("class", "carousel-inner");
+        divCar.appendChild(divInner);
 
         //Muestro las producciones de cada categoría 
         var productions = vs.getProductionsCategory(categoria.value);
         var production = productions.next();
+        var i = 0;
 
         while (production.done !== true) {
-            //Creo un div para meterlo en columnas más pequeñas y se quede a un lado
-            var fotoPro = document.createElement("div");
-            fotoPro.setAttribute("class", "col-sm-6");
-            cap.appendChild(fotoPro);
 
-            //Creo el div donde va la miniatura de la foto
-            var galeria1 = document.createElement("div");
-            galeria1.setAttribute("class", "thumbnail");
-            fotoPro.appendChild(galeria1);
+            var li =document.createElement("li");
+            li.setAttribute("data-target", "#myCarousel");
+            li.setAttribute("data-slide-to", "'"+i+"'");
+            if(i == 0){
+                li.setAttribute("class", "active");
+            }
+            ol.appendChild(li);
+
+            //div para las imagenes e info
+            var divItem = document.createElement("div");
+            if(i == 0 ){
+                divItem.setAttribute("class", "item active");
+            }else{
+                divItem.setAttribute("class", "item");
+            }
+            divInner.appendChild(divItem);
 
             //Cojo la foto de la Producción
             var imgPro = document.createElement("img");
             imgPro.setAttribute("src", production.value.image);
-            galeria1.appendChild(imgPro);
+            imgPro.addEventListener("click", showProduction(production.value));
+            divItem.appendChild(imgPro);
 
-            //Meto la descripción de la foto
-            var desc = document.createElement("div");
-            desc.setAttribute("class", "caption");
-            galeria1.appendChild(desc);
+            //Div para la info
+            var divInfo = document.createElement("div");
+            divInfo.setAttribute("class", "carousel-caption");
+            divItem.appendChild(divInfo);
 
             //El nombre y el link para entrar a las producciones
             var h4 = document.createElement("h4");
-            desc.appendChild(h4);
+            divInfo.appendChild(h4);
 
             var a = document.createElement("a");
             a.appendChild(document.createTextNode(production.value.title));
             a.addEventListener("click", showProduction(production.value));
             h4.appendChild(a);
 
-            var btn = document.createElement("button");
-            btn.appendChild(document.createTextNode("+Info"));
-            btn.setAttribute("onclick", "abrirVentana();");
-            desc.appendChild(btn);
-
             production = productions.next();
+            i++;
+
         }//Fin del while de producciones
+
+        //Flechas para mover el carrusel
+        var lft = document.createElement("a");
+        lft.setAttribute("class", "left carousel-control");
+        lft.setAttribute("href", "#myCarousel");
+        lft.setAttribute("data-slide", "prev");
+        divCar.appendChild(lft);
+
+        var spanl1 = document.createElement("span");
+        spanl1.setAttribute("class", "glyphicon glyphicon-chevron-left");
+        lft.appendChild(spanl1);
+
+        var rgt = document.createElement("a");
+        rgt.setAttribute("class", "right carousel-control");
+        rgt.setAttribute("href", "#myCarousel");
+        rgt.setAttribute("data-slide", "next");
+        divCar.appendChild(rgt);
+
+        var spanR1 = document.createElement("span");
+        spanR1.setAttribute("class", "glyphicon glyphicon-chevron-right");
+        rgt.appendChild(spanR1);
+        
         categoria = categorias.next();
     }//Fin del while de categorías
 }
+
 function showActors(){
     return function(){
         //borro lo que haya en el main
         var main = document.getElementById("div-main");
         removeChildren(main);
+        
+        var tituloPag = document.createElement("h2");
+        tituloPag.appendChild(document.createTextNode("Actores"));
+        tituloPag.setAttribute("id","Ini");
+        main.appendChild(tituloPag);
 
         //Creo la tabla
         var div = document.createElement("div");
@@ -268,10 +344,13 @@ function showActors(){
         thead.appendChild(tr);
         var th1 = document.createElement("th");
         tr.appendChild(th1);
-        th1.appendChild(document.createTextNode("Nombre"));
+        th1.appendChild(document.createTextNode("Foto"));
         var th2 = document.createElement("th");
         tr.appendChild(th2);
-        th2.appendChild(document.createTextNode("Apellido"));
+        th2.appendChild(document.createTextNode("Nombre"));
+        var th3 = document.createElement("th");
+        tr.appendChild(th3);
+        th3.appendChild(document.createTextNode("Apellido"));
         var tbody = document.createElement("tbody");
         table.appendChild(tbody);
         //Recorro los actores
@@ -285,19 +364,34 @@ function showActors(){
             tr.appendChild(td1);
             var td2 = document.createElement("td");
             tr.appendChild(td2);
+            var td3 = document.createElement("td");
+            tr.appendChild(td3);
             //Añado los valores a las tablas
+            var a1 = document.createElement("a");
+            td1.appendChild(a1);
+
+            var ft = document.createElement("img");
+            ft.setAttribute("src", actor.value.picture);
+            ft.addEventListener("click", showActor(actor.value));
+            a1.appendChild(ft);
+
             var a = document.createElement("a");
             a.appendChild(document.createTextNode(actor.value.name));
             a.addEventListener("click", showActor(actor.value));
-            td1.appendChild(a);
+            td2.appendChild(a);
 
             var a = document.createElement("a");
             a.appendChild(document.createTextNode(actor.value.lastname1));
             a.addEventListener("click", showActor(actor.value));
-            td2.appendChild(a);
+            td3.appendChild(a);
 
             actor = actors.next();
         }
+        //Explico como funciona la tabla, por si el usu no tiene ni idea ?.?
+        var p = document.createElement("p");
+        p.setAttribute("class", "notas");
+        p.appendChild(document.createTextNode("Para saber más pulse sobre la foto, nombre o apellido."));
+        div.appendChild(p);
     }
 }
 
@@ -356,9 +450,13 @@ function showActor(actor) {
             fotoPro.appendChild(galeria1);
 
             //Cojo la foto de la Producción
+            var a1 = document.createElement("a");
+            a1.addEventListener("click", showProduction(production.value.Production));
+            galeria1.appendChild(a1);
+
             var imgPro = document.createElement("img");
-            imgPro.setAttribute("src", production.value.Production.image);
-            galeria1.appendChild(imgPro);
+            imgPro.setAttribute("src", production.value.Production.image );
+            a1.appendChild(imgPro);
 
             //Meto la descripción de la foto
             var desc = document.createElement("div");
@@ -385,6 +483,11 @@ function showDirectors(){
         var main = document.getElementById("div-main");
         removeChildren(main);
 
+        var tituloPag = document.createElement("h2");
+        tituloPag.appendChild(document.createTextNode("Directores"));
+        tituloPag.setAttribute("id","Ini");
+        main.appendChild(tituloPag);
+
         //Creo un contenedor para la tabla
         var div = document.createElement("div");
         div.setAttribute("class", "container");
@@ -400,10 +503,13 @@ function showDirectors(){
         thead.appendChild(tr);
         var th1 = document.createElement("th");
         tr.appendChild(th1);
-        th1.appendChild(document.createTextNode("Nombre"));
+        th1.appendChild(document.createTextNode("Foto"));
         var th2 = document.createElement("th");
         tr.appendChild(th2);
-        th2.appendChild(document.createTextNode("Apellido"));
+        th2.appendChild(document.createTextNode("Nombre"));
+        var th3 = document.createElement("th");
+        tr.appendChild(th3);
+        th3.appendChild(document.createTextNode("Apellido"));
         var tbody = document.createElement("tbody");
         table.appendChild(tbody);
         
@@ -420,23 +526,36 @@ function showDirectors(){
             tr.appendChild(td1);
             var td2 = document.createElement("td");
             tr.appendChild(td2);
-
+            var td3 = document.createElement("td");
+            tr.appendChild(td3);
             //Añado los valores a las tablas
+            var a1 = document.createElement("a");
+            td1.appendChild(a1);
+
+            var ft = document.createElement("img");
+            ft.setAttribute("src", director.value.picture);
+            ft.addEventListener("click", showDirector(director.value));
+            a1.appendChild(ft);
+
             var a = document.createElement("a");
             a.appendChild(document.createTextNode(director.value.name));
             a.addEventListener("click", showDirector(director.value));
-            td1.appendChild(a);
+            td2.appendChild(a);
             
             var a = document.createElement("a");
             a.appendChild(document.createTextNode(director.value.lastname1));
             a.addEventListener("click", showDirector(director.value));
-            td2.appendChild(a);
+            td3.appendChild(a);
 
             director = directores.next();
         }
+        //Explico como funciona la tabla, por si el usu no tiene ni idea ?.?
+        var p = document.createElement("p");
+        p.setAttribute("class", "notas");
+        p.appendChild(document.createTextNode("Para saber más pulse sobre la foto, nombre o apellido."));
+        div.appendChild(p);
     }
 }
-
 
 function showDirector(director) {
     return function () {
@@ -490,9 +609,13 @@ function showDirector(director) {
             fotoPro.appendChild(galeria1);
 
             //Cojo la foto de la Producción
+            var a1 = document.createElement("a");
+            galeria1.appendChild(a1);
+
             var imgPro = document.createElement("img");
             imgPro.setAttribute("src", production.value.image);
-            galeria1.appendChild(imgPro);
+            imgPro.addEventListener("click", showProduction(production.value));
+            a1.appendChild(imgPro);
 
             //Meto la descripción de la foto
             var desc = document.createElement("div");
@@ -532,6 +655,25 @@ function showProduction(production) {
         img.setAttribute("src", production.image);
         galeria.appendChild(img);
 
+        var btnG = document.createElement("div");
+        btnG.setAttribute("class", "btn-group-vertical");
+        foto.appendChild(btnG);
+
+        var btn = document.createElement("button");
+        btn.setAttribute("type", "button");
+        btn.setAttribute("class", "btn btn-default btnInfo")
+        btn.appendChild(document.createTextNode("Más información"));
+        //btn.setAttribute("value", production.title);
+        btn.addEventListener("click", Ventana(production));
+        btnG.appendChild(btn);
+
+        var btn1 = document.createElement("button");
+        btn1.setAttribute("type", "button");
+        btn1.setAttribute("class", "btn btn-default btnInfo")
+        btn1.appendChild(document.createTextNode("Cerrar ventanas abiertas"));
+        btn1.addEventListener("click", cerrarVentanas());
+        btnG.appendChild(btn1);
+        
         //Empiezo a meter la info
         var info = document.createElement("div");
         info.setAttribute("class", "col-sm-8");
@@ -556,13 +698,17 @@ function showProduction(production) {
             var col1 = document.createElement("div");
             col1.setAttribute("class", "col-sm-3");
             div_actores.appendChild(col1);
-
+            //Foto y enlace al actor
             var galeria = document.createElement("div");
             galeria.setAttribute("class", "thumbnail");
 
+            var a1 = document.createElement("a");
+            galeria.appendChild(a1);
+
             var foto = document.createElement("img");
             foto.setAttribute("src", iterador.actores[i].actor.picture);
-            galeria.appendChild(foto);
+            foto.addEventListener("click", showActor(iterador.actores[i].actor));
+            a1.appendChild(foto);
 
             var cap = document.createElement("div");
             cap.setAttribute("class", "caption");
@@ -599,9 +745,13 @@ function showProduction(production) {
             galeria2.setAttribute("class", "thumbnail");
             col2.appendChild(galeria2);
 
+            var a2 = document.createElement("a");
+            galeria2.appendChild(a2);
+
             var foto2 = document.createElement("img");
             foto2.setAttribute("src", iterador.directores[i].director.picture);
-            galeria2.appendChild(foto2);
+            foto2.addEventListener("click", showDirector(iterador.directores[i].director));
+            a2.appendChild(foto2);
 
             var cap2 = document.createElement("div");
             cap2.setAttribute("class", "caption");
@@ -616,8 +766,86 @@ function showProduction(production) {
             cap2.appendChild(a2);
             
         }
+        
     }
+    
 }
+function showResource(production) {
+    return function () {
+        //El main
+        var main = document.getElementById("div-main");
+        //Foto de la produccion
+        var divFoto = document.createElement("div");
+        divFoto.setAttribute("class", "col-sm-4");
+        main.appendChild(divFoto);
+
+        var divThumb = document.createElement("div");
+        divThumb.setAttribute("class", "thumbnail");
+        divFoto.appendChild(divThumb);
+
+        var img = document.createElement("img");
+        img.setAttribute("src", production.image);
+        divThumb.appendChild(img);
+        //La info de la producción
+        var divInfo = document.createElement("div");
+        divInfo.setAttribute("class", "col-sm-8");
+        divInfo.setAttribute("id", "info");
+        //Titulo y tabla con los recursos
+        var title = document.createElement("h2");
+        title.appendChild(document.createTextNode(production.title));
+        divInfo.appendChild(title);
+
+        var table = document.createElement("table");
+
+        var tr1 = document.createElement("tr");
+        table.appendChild(tr1);
+        var dur = document.createElement("td");
+        dur.appendChild(document.createTextNode("Duración"));
+        tr1.appendChild(dur);
+        var td1 = document.createElement("td");
+        td1.appendChild(document.createTextNode(production.resource.duration));
+        tr1.appendChild(td1);
+
+        var tr2 = document.createElement("tr");
+        table.appendChild(tr2);
+        var link = document.createElement("td");
+        link.appendChild(document.createTextNode("Link"));
+        tr2.appendChild(link);
+        var td2 = document.createElement("td");
+        td2.appendChild(document.createTextNode(production.resource.link));
+        tr2.appendChild(td2);
+
+        var tr3 = document.createElement("tr");
+        table.appendChild(tr3);
+        var aud = document.createElement("td");
+        aud.appendChild(document.createTextNode("Audios"));
+        tr3.appendChild(aud);
+        var td3 = document.createElement("td");
+
+        var audios = "";
+        for (var i = 0; i < production.resource.audios.length; i++) {
+            audios += production.resource.audios[i];
+        }
+        td3.appendChild(document.createTextNode(audios));
+        tr3.appendChild(td3);
+
+        var tr4 = document.createElement("tr");
+        table.appendChild(tr4);
+        var subs = document.createElement("td");
+        subs.appendChild(document.createTextNode("Subtitulos"));
+        tr4.appendChild(subs);
+        var td4 = document.createElement("td");
+        var subtitulos = "";
+        for (var i = 0; i < production.resource.subtitles.length; i++) {
+            subtitulos += production.resource.subtitles[i];
+        }
+        td4.appendChild(document.createTextNode(subtitulos));
+        tr4.appendChild(td4);
+
+    }
+
+}
+
 function removeChildren(elem) {
     //recorro los hijos y los borros, es así para no borrar también al padre
     var len = elem.children.length - 1;
@@ -632,9 +860,9 @@ function initPopulate() {
     actores.addEventListener("click", showActors());
     var directores = document.getElementById("directores");
     directores.addEventListener("click", showDirectors());
-
+    
     //Método para crear los objetos
-    objetos();
+    crearObjetos();
     //Llamo al método para poder desplegar el menu categoría
     categoriesMenuPopulate();
     //Llamo al método para que se vean las categorías en el main
