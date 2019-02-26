@@ -1,9 +1,9 @@
 "use strict";
-var ventana = [];
+var ventanas = [];
 var cont = 0;
 function Ventana(production){
 	function escribir(){
-		var main = ventana[cont].document.getElementById("div-main");
+		var main = ventanas[cont].document.getElementById("div-main");
 		var cap = document.createElement("div");
 		cap.setAttribute("class", "caption");
 		main.appendChild(cap);
@@ -24,12 +24,11 @@ function Ventana(production){
 
 		//Meto la descripción de la foto
 		var desc = document.createElement("div");
-		desc.setAttribute("class", "caption");
+		desc.setAttribute("class", "caption title");
 		galeria.appendChild(desc);
 
 		//El nombre y el link para entrar a las producciones
 		var h4 = document.createElement("h4");
-		desc.setAttribute("class", "title");
 		h4.appendChild(document.createTextNode(production.title));
 		desc.appendChild(h4);
 
@@ -43,12 +42,20 @@ function Ventana(production){
         info.appendChild(name);
 
         var p1= document.createElement("p");
-        p1.appendChild(document.createTextNode("Duración: "+ production.resource.duration));
-        info.appendChild(p1);
+		info.appendChild(p1);
+		//Para que esté en negrita
+		var b1 = document.createElement("b");
+        b1.appendChild(document.createTextNode("Duración: "));
+		p1.appendChild(b1);
+		p1.appendChild(document.createTextNode(production.resource.duration));
 
         var p2 = document.createElement("p");
-        p2.appendChild(document.createTextNode("Link de acceso: "+ production.resource.link));
 		info.appendChild(p2);
+
+		var b2 = document.createElement("b");
+        b2.appendChild(document.createTextNode("Link de acceso: "));
+		p2.appendChild(b2);
+		p2.appendChild(document.createTextNode(production.resource.link));
 		
 		var btn1 = document.createElement("button");
         btn1.setAttribute("type", "button");
@@ -62,15 +69,15 @@ function Ventana(production){
 	return function(){
 		cont++;
 		var pagina= "NuevaPestaña.html";	
-		ventana[cont]=window.open(pagina);
-		ventana[cont].onload = escribir;
+		ventanas[cont]=window.open(pagina);
+		ventanas[cont].onload = escribir;
 	}
 }
 
 function cerrarVentanas(){
 	return function(){
 		for(var i = 1; i <= cont; i++){
-			ventana[i].close();
+			ventanas[i].close();
 		}
 		cont=0;
 	}
