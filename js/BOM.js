@@ -63,8 +63,6 @@ function Ventana(production){
         btn1.appendChild(document.createTextNode("Cerrar"));
         btn1.setAttribute("onclick", "window.close()")
         info.appendChild(btn1);
-
-		
 	}
 	return function(){
 		cont++;

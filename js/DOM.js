@@ -654,9 +654,9 @@ function showProductions(){
         tituloPag.setAttribute("id","Ini");
         main.appendChild(tituloPag);
 
-        var r = document.createElement("div");
+        /*var r = document.createElement("div");
         r.setAttribute("class"," caption row");
-        main.appendChild(r);
+        main.appendChild(r);*/
 
         var productions = vs.productions;
         var production = productions.next();
@@ -666,7 +666,7 @@ function showProductions(){
             //Creo un div para meterlo en columnas más pequeñas y se quede a un lado
             var fotoPro = document.createElement("div");
             fotoPro.setAttribute("class", "col-md-4");
-            r.appendChild(fotoPro);
+            main.appendChild(fotoPro);
 
             //Creo el div donde va la miniatura de la foto
             var galeria1 = document.createElement("div");
